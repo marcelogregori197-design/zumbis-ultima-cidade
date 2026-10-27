@@ -1,29 +1,29 @@
-name: Gerar APK do Jogo
+name: Build APK
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Copiar código do repositório
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Configurar ambiente Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+    - name: set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
 
-      - name: Preparar e verificar arquivos
-        run: |
-          echo "A verificar os arquivos do jogo"
-          ls -la
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
 
-      - name: Mensagem de conclusão
-        run: |
-          echo "Estrutura pronta! O fluxo de trabalho foi concluído com sucesso."
-          
+    # ESTA É A PARTE MAIS IMPORTANTE QUE GERA O BOTÃO DE DOWNLOAD:
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug
+        path: app/build/outputs/apk/debug/app-debug.apk
+        
