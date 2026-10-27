@@ -2,7 +2,7 @@ name: Gerar APK do Jogo
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -20,9 +20,9 @@ jobs:
 
       - name: Preparar e verificar arquivos
         run: |
-          echo "A verificar os arquivos do jogo..."
+          echo "A verificar os arquivos do jogo"
           ls -la
 
       - name: Mensagem de conclusão
         run: |
-          echo "Estrutura pronta! O fluxo de compilação está configurado."
+          echo "Estrutura pronta! O fluxo de trabalho foi concluído com sucesso."
