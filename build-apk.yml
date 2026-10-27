@@ -4,24 +4,25 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Copiar código do repositório
-      uses: actions/checkout@v4
+      - name: Copiar código do repositório
+        uses: actions/checkout@v4
 
-    - name: Configurar ambiente Node.js (se necessário)
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
+      - name: Configurar ambiente Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-    - name: Preparar e verificar arquivos
-      run: |
-        echo "A verificar os arquivos do jogo..."
-        ls -la
+      - name: Preparar e verificar arquivos
+        run: |
+          echo "A verificar os arquivos do jogo..."
+          ls -la
 
-    - name: Mensagem de conclusão
-      run: |
-        echo "Estrutura pronta! O fluxo de compilação foi executado com sucesso."
+      - name: Mensagem de conclusão
+        run: |
+          echo "Estrutura pronta! O fluxo de compilação está configurado."
