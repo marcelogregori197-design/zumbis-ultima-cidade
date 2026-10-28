@@ -1,10 +1,10 @@
-name: Build Android APK
+name: Android CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
 
 jobs:
   build:
@@ -21,11 +21,15 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Dar permissão de execução ao Gradle Wrapper
+    # CORREÇÃO 1: Validar onde o arquivo está ou se o projeto está numa subpasta
+    # Se o seu projeto Android NÃO estiver na raiz, altere o "working-directory" abaixo
+    - name: Dar permissão de execução ao Gradle
       run: chmod +x ./gradlew
+      # working-directory: ./nome-da-sua-subpasta # Descomente e altere se necessário
 
     - name: Compilar o APK (Release ou Debug)
       run: ./gradlew assembleDebug
+      # working-directory: ./nome-da-sua-subpasta # Descomente e altere se necessário
 
     - name: Guardar o APK gerado como Artefacto
       uses: actions/upload-artifact@v4
