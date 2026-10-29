@@ -5,9 +5,13 @@ on:
 
 jobs:
   build:
+    name: Build APK
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Baixar código
+        uses: actions/checkout@v4
 
       - name: ☕ Configurar Java
         uses: actions/setup-java@v4
@@ -20,18 +24,17 @@ jobs:
         with:
           api-level: 34
           build-tools: "34.0.0"
+          cache: true
 
-      # ✅ VAMOS CRIAR O GRADLE WRAPPER AQUI — automaticamente!
-      - name: 🛠️ Criar Gradle Wrapper
-        run: |
-          gradle wrapper --gradle-version 8.5
-          chmod +x gradlew
-
+      # ✅ Tudo pronto — agora compila
       - name: 🔨 Compilar APK
-        run: ./gradlew assembleDebug
+        run: |
+          chmod +x gradlew 2>/dev/null || true
+          ./gradlew assembleDebug --stacktrace
 
-      - name: 📦 Baixar APK
+      - name: 📦 Salvar APK
         uses: actions/upload-artifact@v4
+        if: success()
         with:
-          name: App-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: APK-Pronto
+          path: app/build/outputs/apk/debug/*.apk
