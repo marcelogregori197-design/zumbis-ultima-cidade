@@ -1,30 +1,37 @@
-name: Build Android
-on: [push]
+name: Build Android APK
+on:
+  push:
+    branches: [ main, master ]
 
 jobs:
   build:
+    name: Compilar APK
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Configurar Java
+    steps:
+      - name: 📥 Baixar código
+        uses: actions/checkout@v4
+
+      - name: ☕ Configurar Java
         uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"  # ✅ Versão compatível
-
-      - name: Configurar Android SDK
-        uses: actions/setup-android@v4
+      - name: 📱 Configurar Android SDK
+        uses: android-actions/setup-android@v4
         with:
           api-level: 34
           build-tools: "34.0.0"
-          cache: true  # ✅ Acelera e reduz falhas de rede
+          cache: true
 
-      - name: Compilar APK
-        run: ./gradlew assembleDebug
-        
+      # ✅ Aqui está a mudança — usa o gradle do sistema, não precisa de gradlew
+      - name: 🔨 Compilar APK
+        run: gradle assembleDebug
+
+      - name: 📦 Disponibilizar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: App-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
