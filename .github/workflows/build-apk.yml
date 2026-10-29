@@ -16,14 +16,16 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"  # ✅ Versão compatível
+          node-version: "20"
 
+      # ✅ AQUI ESTAVA O ERRO — use android-actions/...
       - name: Configurar Android SDK
-        uses: actions/setup-android@v4
+        uses: android-actions/setup-android@v4
         with:
           api-level: 34
           build-tools: "34.0.0"
-          cache: true  # ✅ Acelera e reduz falhas de rede
+          cache: true
 
       - name: Compilar APK
         run: ./gradlew assembleDebug
+        
