@@ -1,15 +1,7 @@
 name: Build Android APK
-
-# Executa quando você envia código para a branch main/master
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-
-# Define permissões necessárias
-permissions:
-  contents: read
 
 jobs:
   build:
@@ -17,24 +9,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Baixa o código do repositório
       - name: 📥 Baixar código
         uses: actions/checkout@v4
 
-      # 2️⃣ Configura Java (obrigatório para Android)
       - name: ☕ Configurar Java
         uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
 
-      # 3️⃣ Configura Node.js (versão compatível)
-      - name: 🟢 Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      # 4️⃣ Configura Android SDK
       - name: 📱 Configurar Android SDK
         uses: android-actions/setup-android@v4
         with:
@@ -42,15 +25,10 @@ jobs:
           build-tools: "34.0.0"
           cache: true
 
-      # 5️⃣ Dá permissão de execução ao gradlew (MUITO IMPORTANTE!)
-      - name: 🔑 Permitir execução do Gradle
-        run: chmod +x gradlew
-
-      # 6️⃣ Compila o APK
+      # ✅ Aqui está a mudança — usa o gradle do sistema, não precisa de gradlew
       - name: 🔨 Compilar APK
-        run: ./gradlew assembleDebug
+        run: gradle assembleDebug
 
-      # 7️⃣ Disponibiliza o APK para download
       - name: 📦 Disponibilizar APK
         uses: actions/upload-artifact@v4
         with:
