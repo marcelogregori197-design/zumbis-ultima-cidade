@@ -1,83 +1,33 @@
 
-name: Build Android APK
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
-on:
-  push:
-    branches: [main, master]
-  workflow_dispatch:
+android {
+    namespace 'com.ultimacidade.zumbis'
+    compileSdk 35
 
-permissions:
-  contents: read
+    defaultConfig {
+        applicationId 'com.ultimacidade.zumbis'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+    }
 
-jobs:
-  build:
-    name: Build APK
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
 
-    steps:
-      - name: Baixar codigo
-        uses: actions/checkout@v4
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 
-      - name: Configurar Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Configurar Android SDK
-        uses: android-actions/setup-android@v4
-
-      - name: Extrair projeto Android
-        shell: bash
-        run: |
-          set -e
-
-          if ! find . -type f -name gradlew \
-            -not -path './.git/*' -print -quit | grep -q .; then
-
-            ZIP_FILE=$(find . -maxdepth 3 -type f \
-              -iname '*.zip' -print -quit)
-
-            if [ -n "$ZIP_FILE" ]; then
-              mkdir -p android-project
-              unzip -oq "$ZIP_FILE" -d android-project
-            fi
-          fi
-
-          echo "Arquivos encontrados:"
-          find . -type f \( -name gradlew \
-            -o -name settings.gradle \
-            -o -name settings.gradle.kts \
-            -o -name build.gradle \
-            -o -name build.gradle.kts \) \
-            -not -path './.git/*' | head -80
-
-      - name: Compilar APK
-        shell: bash
-        run: |
-          set -e
-
-          GRADLEW=$(find . -type f -name gradlew \
-            -not -path './.git/*' -print -quit)
-
-          if [ -z "$GRADLEW" ]; then
-            echo "ERRO: arquivo gradlew nao encontrado."
-            echo "Verifique se o ZIP contem o projeto Android completo."
-            exit 1
-          fi
-
-          PROJECT_DIR=$(dirname "$GRADLEW")
-          cd "$PROJECT_DIR"
-
-          chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
-
-      - name: Salvar APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: APK-Pronto
-          path: '**/build/outputs/apk/debug/*.apk'
-          if-no-files-found: error
-          retention-days: 7
-          
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
